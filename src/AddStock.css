@@ -1,0 +1,9 @@
+.add-stock-container {
+    position:absolute;
+    right: 10vw;
+    bottom: 10vh;
+}
+
+.category-container {
+    padding-top: 10px;
+}
