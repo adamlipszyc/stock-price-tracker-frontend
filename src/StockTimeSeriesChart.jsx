@@ -40,7 +40,7 @@ const StockTimeSeriesChart = ({ symbol }) => {
       const timeSeries = response.data["Time Series (Daily)"];
 
       // const timeSeries = data["Time Series (Daily)"];
-      console.log(timeSeries);
+      // console.log(timeSeries);
 
       const labels = Object.keys(timeSeries);
       const closingPrices = Object.values(timeSeries).map((value) =>
@@ -55,10 +55,10 @@ const StockTimeSeriesChart = ({ symbol }) => {
       const lowestPrices = Object.values(timeSeries).map((value) =>
         parseFloat(value["3. low"])
       );
-      console.log(closingPrices);
-      console.log(openingPrices);
-      console.log(highestPrices);
-      console.log(lowestPrices);
+      // console.log(closingPrices);
+      // console.log(openingPrices);
+      // console.log(highestPrices);
+      // console.log(lowestPrices);
 
       setChartData({
         labels,
@@ -138,8 +138,10 @@ const StockTimeSeriesChart = ({ symbol }) => {
   return (
     <>
       {loaded ? (
-        <div>
-          <h3>{symbol} Stock Price Chart (Last 5 months)</h3>
+        <div style={{ width: "100%", height: "auto" }}>
+          <h3 style={{ textAlign: "center" }}>
+            {symbol} Stock Price Chart (Last 5 months)
+          </h3>
           <Line data={chartData} options={options} />
         </div>
       ) : (

@@ -1,7 +1,7 @@
 .add-stock-container {
     position:absolute;
     right: 10vw;
-    bottom: 10vh;
+    top: 10vh;
 }
 
 .category-container {

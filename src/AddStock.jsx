@@ -14,6 +14,7 @@ import {
   IconButton,
   FormGroup,
   FormControlLabel,
+  Autocomplete,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -22,61 +23,40 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import CurrencyPoundIcon from "@mui/icons-material/CurrencyPound";
 
-const AddStock = ({ fetchTrackedStocksCallback }) => {
-  const [symbol, setSymbol] = useState("");
+const AddStock = ({ fetchTrackedStocksCallback, allStockData }) => {
+  const [stock, setStock] = useState(null);
+  const [stockInputValue, setStockInputValue] = useState("");
   const [shares, setShares] = useState(0);
   const [date, setDate] = useState(dayjs());
-  const [name, setName] = useState("");
   const [purchasePrice, setPurchasePrice] = useState(0.0);
   const [isShown, setIsShown] = useState(false);
 
   const handleAddStock = async (e) => {
     try {
-      console.log([symbol, name, shares, purchasePrice, date]);
+      console.log(stock);
+
+      console.log([stock.symbol, stock.name, shares, purchasePrice, date]);
+
       await axios.post("http://localhost:5000/api/stocks", {
-        symbol,
-        name,
+        symbol: stock.symbol,
+        name: stock.name,
         shares: parseInt(shares),
         purchase_price: parseFloat(purchasePrice),
         date,
       });
 
-      setSymbol("");
-      setName("");
+      setStock(null);
       setShares(0);
       setPurchasePrice(0.0);
       setDate(dayjs());
       fetchTrackedStocksCallback();
-      console.log("made it here");
     } catch (error) {
       console.error("Error adding stock:", error);
     }
   };
 
-  //   const handleAddExpense = async (e) => {
-  //     try {
-  //       const response = await fetch("/api/expenses", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ category, amount, date, description }),
-  //       });
-
-  //       if (response.ok) {
-  //         fetchExpensesCallBack();
-  //         setCategory("");
-  //         setAmount(null);
-  //         setDate("");
-  //         setDescription("");
-  //       } else {
-  //         throw new Error("Unable to add expense");
-  //       }
-  //     } catch (err) {
-  //       console.error("Error adding expense:", err);
-  //     }
-  //   };
-
   return (
-    <div className="add-expense-container">
+    <div className="add-stock-container">
       <button onClick={() => setIsShown(!isShown)}>
         {!isShown ? "Add" : "Close"}
       </button>
@@ -93,7 +73,23 @@ const AddStock = ({ fetchTrackedStocksCallback }) => {
               <div className="category-container">
                 <Box sx={{ minWidth: 300 }}>
                   <FormControl sx={{ minWidth: 300, m: 1, ml: 0 }}>
-                    <TextField
+                    <Autocomplete
+                      options={allStockData}
+                      getOptionLabel={(option) =>
+                        `${option.symbol} - ${option.name}`
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label="Search Stocks" required />
+                      )}
+                      value={stock}
+                      inputValue={stockInputValue}
+                      onInputChange={(event, newInputValue) =>
+                        setStockInputValue(newInputValue)
+                      }
+                      onChange={(event, newValue) => setStock(newValue)}
+                    />
+
+                    {/* <TextField
                       label="Symbol"
                       id="symbol"
                       name="symbol"
@@ -101,7 +97,7 @@ const AddStock = ({ fetchTrackedStocksCallback }) => {
                       onChange={(e) => setSymbol(e.target.value)}
                       size="small"
                       required
-                    />
+                    /> */}
                   </FormControl>
                 </Box>
               </div>
@@ -158,7 +154,7 @@ const AddStock = ({ fetchTrackedStocksCallback }) => {
                   />
                 </LocalizationProvider>
               </FormControl>
-              <div>
+              {/* <div>
                 <FormControl sx={{ m: 1, ml: 0, minWidth: 300 }}>
                   <TextField
                     label="Name"
@@ -169,7 +165,7 @@ const AddStock = ({ fetchTrackedStocksCallback }) => {
                     size="small"
                   />
                 </FormControl>
-              </div>
+              </div> */}
             </Box>
             <button type="submit">Add Stock</button>
           </form>
